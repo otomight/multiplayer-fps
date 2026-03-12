@@ -26,7 +26,7 @@ fn start_server() -> std::net::SocketAddr {
     std::thread::spawn(move || {
         tokio::runtime::Runtime::new()
             .unwrap()
-            .block_on(server::run_addr(server_addr))
+            .block_on(server::run_addr(server_addr, 0))
     });
 
     // Give the server a moment to bind

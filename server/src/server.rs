@@ -13,11 +13,11 @@ const MAX_PACKET: usize = 512;
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub async fn run_addr(addr: SocketAddr) {
+pub async fn run_addr(addr: SocketAddr, map_id: u8) {
     let socket = Arc::new(UdpSocket::bind(addr).await.expect("failed to bind UDP socket"));
-    let state = Arc::new(RwLock::new(GameState::new()));
+    let state = Arc::new(RwLock::new(GameState::new(map_id)));
 
-    println!("Server listening on {addr}");
+    println!("Server listening on {addr} (level {map_id})");
 
     tokio::spawn(tick_loop(socket.clone(), state.clone()));
 

@@ -37,10 +37,10 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new() -> Self {
+    pub fn new(map_id: u8) -> Self {
         Self {
             sessions: HashMap::new(),
-            map: level(0),
+            map: level(map_id),
             next_id: 0,
             seq: 0,
         }
