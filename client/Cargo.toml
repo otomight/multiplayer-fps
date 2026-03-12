@@ -1,0 +1,11 @@
+[package]
+name = "client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+shared            = { path = "../shared" }
+winit             = "0.30"
+softbuffer        = "0.4"
+crossbeam-channel = "0.5"
+tokio             = { version = "1", features = ["rt", "net", "time", "macros"] }
