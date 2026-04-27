@@ -11,12 +11,9 @@ pub const SCREEN_HEIGHT: u32 = SCREEN_H as u32;
 
 /// Compose the full frame: 3D view + minimap overlay + HUD.
 pub fn render(frame: &mut [u8], state: &SharedState, fps: u32) {
-    // Start with a black canvas
+    // Start with a black canvas; the raycaster overwrites every pixel when
+    // connected, but we need a clear frame for the "connecting" state too.
     frame.fill(0);
-    // Pixels uses RGBA but sets alpha to 255; we treat the buffer as opaque.
-    for chunk in frame.chunks_exact_mut(4) {
-        chunk[3] = 255;
-    }
 
     if let Some(player) = state.local_player() {
         raycaster::render(frame, player, &state.players, &state.map);

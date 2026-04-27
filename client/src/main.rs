@@ -106,7 +106,7 @@ impl App {
             .local_player()
             .map(|p| p.angle)
             .unwrap_or(0.0);
-        let (dx, dy, da) = self.keys.compute_input(angle, dt);
+        let (dx, dy, da) = self.keys.compute_input(angle);
         self.input_seq += 1;
         let _ = self.input_tx.try_send(ClientPacket::Input {
             seq: self.input_seq,

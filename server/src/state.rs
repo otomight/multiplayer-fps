@@ -95,20 +95,20 @@ impl GameState {
 
     /// Advance the simulation by one tick.
     /// Removes timed-out clients, applies pending inputs, resolves collisions.
-    /// `_dt` is not used here because clients pre-scale their dx/dy/da by delta_time.
-    /// It is kept as a parameter for future server-side simulation (e.g. AI players).
-    pub fn tick(&mut self, _dt: f32) {
+    /// `dt` is the server tick period; clients send velocities (units/second)
+    /// so we multiply here to get frame-rate-independent movement.
+    pub fn tick(&mut self, dt: f32) {
         let now = Instant::now();
 
         self.sessions
             .retain(|_, s| now.duration_since(s.last_seen).as_secs() < CLIENT_TIMEOUT_SECS);
 
         for s in self.sessions.values_mut() {
-            // dx/dy are already scaled by MOVE_SPEED*dt on the client side
-            let (nx, ny) = try_move(&self.map, s.player.x, s.player.y, s.pending.dx, s.pending.dy);
+            let (nx, ny) = try_move(&self.map, s.player.x, s.player.y,
+                                    s.pending.dx * dt, s.pending.dy * dt);
             s.player.x = nx;
             s.player.y = ny;
-            s.player.angle += s.pending.da;
+            s.player.angle += s.pending.da * dt;
         }
 
         self.seq = self.seq.wrapping_add(1);

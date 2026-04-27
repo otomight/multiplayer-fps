@@ -33,26 +33,27 @@ impl KeyState {
         }
     }
 
-    /// Returns (dx, dy, da) — movement deltas already scaled by speed × dt,
-    /// ready to put straight into a ClientPacket::Input.
-    pub fn compute_input(&self, angle: f32, dt: f32) -> (f32, f32, f32) {
+    /// Returns (dx, dy, da) as velocities (units/second), not pre-scaled by dt.
+    /// The server multiplies by its own dt each tick, making movement
+    /// independent of client frame rate.
+    pub fn compute_input(&self, angle: f32) -> (f32, f32, f32) {
         let mut dx = 0.0_f32;
         let mut dy = 0.0_f32;
         let mut da = 0.0_f32;
 
         if self.forward {
-            dx += angle.cos() * MOVE_SPEED * dt;
-            dy += angle.sin() * MOVE_SPEED * dt;
+            dx += angle.cos() * MOVE_SPEED;
+            dy += angle.sin() * MOVE_SPEED;
         }
         if self.backward {
-            dx -= angle.cos() * MOVE_SPEED * dt;
-            dy -= angle.sin() * MOVE_SPEED * dt;
+            dx -= angle.cos() * MOVE_SPEED;
+            dy -= angle.sin() * MOVE_SPEED;
         }
         if self.turn_left {
-            da -= ROT_SPEED * dt;
+            da -= ROT_SPEED;
         }
         if self.turn_right {
-            da += ROT_SPEED * dt;
+            da += ROT_SPEED;
         }
 
         (dx, dy, da)
